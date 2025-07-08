@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables and secrets
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor and IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Test and coverage
+.coverage
+.tox/
+.mypy_cache/
+.pytest_cache/
+.cache/
+
+# Logs
+*.log
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Docker
+*.pid
+
+# Misc
+*.bak
+*.swp
+*.tmp
+
+# Node (if any JS tools are used)
+node_modules/

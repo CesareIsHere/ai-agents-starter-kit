@@ -1,0 +1,138 @@
+# Configurazione degli Agenti AI
+
+metadata:
+  version: "1.0"
+  description: "Configurazione sistema agenti AI"
+  created_by: "agents-company"
+
+# Configurazioni globali
+globals:
+  default_model: "gpt-4"
+  default_temperature: 0.7
+  max_tokens: 4000
+  timeout: 30
+
+# Definizione dei tools disponibili
+tools:
+  # Tools auto-discovery dalla cartella app/tools/
+  auto_discover: true
+  # Tools specifici (opzionale, per override)
+  custom:
+    - name: "search_news"
+      module: "app.tools.get_news_article"
+      function: "get_news_articles"
+      enabled: true
+
+# Definizione degli agenti
+agents:
+  # Agente per matematica
+  math_tutor:
+    name: "Math Tutor"
+    type: "specialist"
+    description: "Specialist agent for math questions and calculations"
+    instructions: |
+      You are a helpful math tutor. You provide step-by-step explanations 
+      for math problems and can perform calculations.
+      Always explain your reasoning clearly and include examples.
+      Use the calculator tool for precise calculations.
+    tools:
+      - "calculate"
+    model: "gpt-4"
+    temperature: 0.3
+    enabled: true
+
+  # Agente per storia
+  history_tutor:
+    name: "History Tutor"
+    type: "specialist"
+    description: "Specialist agent for historical questions"
+    instructions: |
+      You are a knowledgeable history tutor. You provide detailed explanations
+      about historical events, figures, and contexts. Include dates and sources
+      when possible.
+    tools: []
+    model: "gpt-4"
+    temperature: 0.5
+    enabled: true
+
+  # Agente per ricerca web/notizie
+  news_researcher:
+    name: "News Researcher"
+    type: "specialist"
+    description: "Specialist agent for finding current news and information"
+    instructions: |
+      You are a research specialist focused on current events and news.
+      Use the search tools to find up-to-date information and present it
+      in a clear, organized manner with sources.
+    tools:
+      - "get_news_articles"
+    model: "gpt-4"
+    temperature: 0.4
+    enabled: true
+
+  # Agente generico per utility
+  utility_agent:
+    name: "Utility Agent"
+    type: "specialist"
+    description: "General utility agent for weather, time, and other services"
+    instructions: |
+      You are a helpful assistant that can provide weather information,
+      time zone details, and other utility services.
+      Always format information clearly and be helpful.
+    tools:
+      - "get_weather"
+      - "get_time"
+    model: "gpt-4"
+    temperature: 0.4
+    enabled: true
+
+  # Agente di triage (orchestratore)
+  triage:
+    name: "Triage Agent"
+    type: "orchestrator"
+    description: "Main routing agent that directs questions to specialists"
+    instructions: |
+      You are the main orchestrator that analyzes user questions and routes
+      them to the most appropriate specialist agent:
+
+      - Math problems, calculations, equations → math_tutor
+      - Historical questions, dates, events → history_tutor  
+      - Current events, news, recent information → news_researcher
+      - Weather, time, utility questions → utility_agent
+
+      If the question spans multiple domains, choose the most relevant specialist.
+      Always consider the conversation context when routing.
+    handoffs:
+      - "math_tutor"
+      - "history_tutor"
+      - "news_researcher"
+      - "utility_agent"
+    tools: []
+    model: "gpt-4"
+    temperature: 0.1 # Bassa per decisioni consistenti
+    enabled: true
+    is_default: true # Agente di entry point
+
+# Configurazioni di sistema
+system:
+  # Configurazione per il mantenimento del contesto
+  context:
+    max_messages: 10
+    token_limit: 4000
+    enable_summarization: true
+
+  # Configurazione cache
+  cache:
+    enabled: true
+    ttl: 3600
+
+  # Configurazione logging
+  logging:
+    level: "INFO"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+  # Configurazione rate limiting
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 60
+    requests_per_hour: 1000
